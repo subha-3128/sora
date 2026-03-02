@@ -1,0 +1,62 @@
+I want you to design a lean MVP (Minimum Viable Product) for a Daily Life Management and Study Progress Tracking System.
+This is for serious personal academic improvement, but I do NOT want overengineering. The goal is simplicity, clarity, and fast execution.
+Your task is to design the simplest version that:
+* Tracks daily tasks
+* Tracks study sessions
+* Tracks subject-wise progress
+* Tracks habits
+* Allows weekly review
+* Allows monthly progress tracking
+* Provides basic performance insights
+1️⃣ MVP Philosophy
+Design this system using these strict rules:
+* Keep it minimal
+* Avoid unnecessary features
+* Avoid complex architecture unless truly needed
+* Focus on core functionality only
+* Prioritize speed of development
+* Make it easy to maintain
+* Design for one primary user (me)
+* Allow future expansion, but do not overbuild now
+2️⃣ Core Features Only
+A. Daily Page (MVP Version)
+* Top 3 priorities
+* Simple to-do list
+* Study sessions (subject + duration + topic)
+* Total study hours (auto-calculated)
+* Habit checklist
+* End-of-day reflection (short text)
+B. Weekly Review (Simple)
+* Total study hours
+* Topics completed
+* Weak subjects
+* 3 wins
+* 3 improvements
+* Plan for next week
+C. Monthly Overview (Simple)
+* Total study hours
+* Subject progress summary
+* Habit consistency %
+* One major insight
+* Next month focus
+3️⃣ Tech & Architecture Decisions
+Now you must:
+1. Decide if authentication/login is necessary for MVP.
+2. Decide if a backend/database is required for MVP.
+3. Suggest the simplest tech stack possible.
+4. Explain why your choice avoids overengineering.
+5. Describe how this can scale later if needed.
+Important:
+* Prioritize simplicity over scalability.
+* Avoid complex systems unless absolutely required.
+* Assume this is for personal use first.
+4️⃣ Data Structure (Minimal)
+Design only the essential data models needed for MVP. Avoid advanced analytics. Avoid complex relationships unless necessary.
+5️⃣ Development Phases
+Explain:
+* What to build in Phase 1 (true MVP)
+* What to delay to Phase 2
+* What to ignore completely for now
+The goal is clarity and execution speed.
+Design something that can realistically be built quickly and used daily without friction.
+Do NOT design a startup-level system. Design a disciplined personal productivity tool MVP.
