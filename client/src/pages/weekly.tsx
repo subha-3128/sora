@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useWeeklyReview, useUpsertWeeklyReview } from "@/hooks/use-reviews";
+import { useWeeklyReview, useUpsertWeeklyReview } from "@/hooks";
 
 export default function WeeklyPage() {
   const [currentDate, setCurrentDate] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
@@ -64,7 +64,7 @@ export default function WeeklyPage() {
   const weekLabel = `Week of ${format(currentDate, "MMM d")}`;
 
   return (
-    <div className="p-4 md:p-8 max-w-4xl mx-auto w-full pb-24">
+    <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto w-full pb-24">
       <PageHeader 
         title="Weekly Review" 
         description="Reflect on the past 7 days and plan ahead."
@@ -80,9 +80,9 @@ export default function WeeklyPage() {
           <div className="h-40 bg-muted rounded-xl"></div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
           <Card className="premium-card">
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="p-5 md:p-6 space-y-6">
               
               <div className="space-y-2">
                 <Label htmlFor="totalHours" className="text-base">Total Study Hours</Label>
@@ -155,7 +155,7 @@ export default function WeeklyPage() {
           </Card>
           
           <div className="flex justify-end">
-            <Button size="lg" type="submit" disabled={upsertReview.isPending} className="px-8 shadow-lg shadow-primary/20">
+            <Button size="lg" type="submit" disabled={upsertReview.isPending} className="w-full sm:w-auto px-8 shadow-lg shadow-primary/20">
               {upsertReview.isPending ? "Saving..." : "Save Weekly Review"}
             </Button>
           </div>

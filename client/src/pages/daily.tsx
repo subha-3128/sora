@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { format, addDays, subDays } from "date-fns";
-import { Check, Star, Trash2, Plus, Clock, BookOpen } from "lucide-react";
+import { Check, Star, Trash2, Plus, Clock, BookOpen, CheckSquare } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -9,18 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { 
+import {
   useTasks, useCreateTask, useUpdateTask, useDeleteTask,
   useHabits, useHabitLogs, useUpsertHabitLog,
   useStudySessions, useCreateStudySession, useDeleteStudySession,
-  useDailyReflection, useUpsertDailyReflection
-} from "@/hooks/use-tasks"; // Note: actually importing from specific hooks in production, we will import all from their respective files.
-
-// Fixing imports manually since they were requested in separate files
-import { useTasks as useT, useCreateTask as useCT, useUpdateTask as useUT, useDeleteTask as useDT } from "@/hooks/use-tasks";
-import { useHabits as useH, useHabitLogs as useHL, useUpsertHabitLog as useUHL } from "@/hooks/use-habits";
-import { useStudySessions as useSS, useCreateStudySession as useCSS, useDeleteStudySession as useDSS } from "@/hooks/use-study";
-import { useDailyReflection as useDR, useUpsertDailyReflection as useUDR } from "@/hooks/use-reviews";
+  useDailyReflection, useUpsertDailyReflection,
+} from "@/hooks";
 
 export default function DailyPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -28,20 +22,20 @@ export default function DailyPage() {
   const { toast } = useToast();
 
   // Queries
-  const { data: tasks = [] } = useT(dateStr);
-  const { data: habits = [] } = useH();
-  const { data: habitLogs = [] } = useHL(dateStr);
-  const { data: studySessions = [] } = useSS(dateStr);
-  const { data: reflection } = useDR(dateStr);
+  const { data: tasks = [] } = useTasks(dateStr);
+  const { data: habits = [] } = useHabits();
+  const { data: habitLogs = [] } = useHabitLogs(dateStr);
+  const { data: studySessions = [] } = useStudySessions(dateStr);
+  const { data: reflection } = useDailyReflection(dateStr);
 
   // Mutations
-  const createTask = useCT();
-  const updateTask = useUT();
-  const deleteTask = useDT();
-  const upsertHabitLog = useUHL();
-  const createStudySession = useCSS();
-  const deleteStudySession = useDSS();
-  const upsertReflection = useUDR();
+  const createTask = useCreateTask();
+  const updateTask = useUpdateTask();
+  const deleteTask = useDeleteTask();
+  const upsertHabitLog = useUpsertHabitLog();
+  const createStudySession = useCreateStudySession();
+  const deleteStudySession = useDeleteStudySession();
+  const upsertReflection = useUpsertDailyReflection();
 
   // Local State
   const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -52,7 +46,7 @@ export default function DailyPage() {
   const [reflectionContent, setReflectionContent] = useState(reflection?.content || "");
 
   // Sync reflection content when data loads
-  useMemo(() => {
+  useEffect(() => {
     if (reflection) setReflectionContent(reflection.content);
     else setReflectionContent("");
   }, [reflection]);
@@ -93,7 +87,7 @@ export default function DailyPage() {
   const minutes = totalStudyMinutes % 60;
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto w-full pb-24">
+    <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full pb-24">
       <PageHeader 
         title="Daily Focus" 
         description="Win the day. One task at a time."
@@ -102,13 +96,13 @@ export default function DailyPage() {
         onNextDate={() => setCurrentDate(prev => addDays(prev, 1))}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
         {/* Left Column: Actionables */}
-        <div className="lg:col-span-7 space-y-8">
+        <div className="lg:col-span-7 space-y-6 lg:space-y-8">
           
           {/* TASKS */}
           <section>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <h2 className="text-xl font-display font-semibold flex items-center gap-2">
                 <CheckSquare className="w-5 h-5 text-primary" /> Tasks
               </h2>
@@ -131,7 +125,7 @@ export default function DailyPage() {
                     placeholder="Add a new task..." 
                     value={newTaskTitle}
                     onChange={(e) => setNewTaskTitle(e.target.value)}
-                    className="border-none shadow-none focus-visible:ring-0 bg-transparent px-0"
+                    className="flex-1 bg-white dark:bg-slate-950 border border-border/60 rounded-lg px-3 py-2 text-sm placeholder:text-muted-foreground/70 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-primary transition-all"
                   />
                   <Button type="submit" size="sm" disabled={!newTaskTitle.trim() || createTask.isPending} className="rounded-lg shadow-sm">
                     {createTask.isPending ? "..." : "Add"}
@@ -180,14 +174,14 @@ export default function DailyPage() {
 
           {/* HABITS */}
           <section>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <h2 className="text-xl font-display font-semibold flex items-center gap-2">
                 <Check className="w-5 h-5 text-emerald-500" /> Daily Habits
               </h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {habits.length === 0 ? (
-                <div className="col-span-full p-4 bg-card rounded-xl border border-dashed text-center text-sm text-muted-foreground">
+                <div className="col-span-full p-5 bg-card rounded-xl border border-dashed text-center text-sm text-muted-foreground">
                   No habits defined. Go to Configuration to add some.
                 </div>
               ) : (
@@ -199,14 +193,14 @@ export default function DailyPage() {
                     <button
                       key={habit.id}
                       onClick={() => upsertHabitLog.mutate({ habitId: habit.id, date: dateStr, completed: !isCompleted })}
-                      className={`relative overflow-hidden p-4 rounded-xl border transition-all duration-300 text-left flex flex-col gap-2 ${
+                      className={`relative overflow-hidden p-4 rounded-xl border transition-all duration-300 text-left flex flex-col gap-2 cursor-pointer active:scale-95 ${
                         isCompleted 
                           ? 'bg-emerald-500/10 border-emerald-500/30 shadow-[inset_0_0_20px_rgba(16,185,129,0.05)]' 
-                          : 'bg-card border-border hover:border-primary/40 hover:shadow-sm'
+                          : 'bg-card border-border hover:border-primary/40 hover:shadow-md'
                       }`}
                     >
-                      <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${
-                        isCompleted ? 'bg-emerald-500 border-emerald-500' : 'border-border/80 bg-background'
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                        isCompleted ? 'bg-emerald-500 border-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]' : 'border-border/80 bg-background hover:border-primary/60'
                       }`}>
                         {isCompleted && <Check className="w-3.5 h-3.5 text-white" />}
                       </div>
@@ -223,11 +217,11 @@ export default function DailyPage() {
         </div>
 
         {/* Right Column: Tracking & Reflection */}
-        <div className="lg:col-span-5 space-y-8">
+        <div className="lg:col-span-5 space-y-6 lg:space-y-8">
           
           {/* STUDY LOG */}
           <section>
-             <div className="flex items-center justify-between mb-4">
+             <div className="flex items-center justify-between mb-3">
               <h2 className="text-xl font-display font-semibold flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-indigo-500" /> Study Log
               </h2>
@@ -305,7 +299,7 @@ export default function DailyPage() {
 
           {/* REFLECTION */}
           <section>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <h2 className="text-xl font-display font-semibold">End of Day Reflection</h2>
             </div>
             <Card className="premium-card p-1">
@@ -333,7 +327,3 @@ export default function DailyPage() {
     </div>
   );
 }
-
-// Ensure icons are correctly imported. I used CheckSquare in DailyPage but imported Check. Fixing inside the component.
-import { CheckSquare as LucideCheckSquare } from "lucide-react";
-const CheckSquare = LucideCheckSquare;

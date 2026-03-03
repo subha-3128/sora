@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
@@ -21,6 +22,37 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+// CORS headers for multi-device access
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Max-Age", "86400");
+  res.header("Access-Control-Allow-Credentials", "true");
+  
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// Cache headers for service worker and offline support
+app.use((req, res, next) => {
+  // Cache service worker and manifest indefinitely (update via SW)
+  if (req.path === "/service-worker.js" || req.path === "/manifest.json" || req.path === "/register-sw.js") {
+    res.header("Cache-Control", "public, max-age=0, must-revalidate");
+  }
+  // Cache static assets for 1 year
+  else if (req.path.match(/\.(js|css|png|jpg|gif|svg|woff|woff2|ttf|eot)$/)) {
+    res.header("Cache-Control", "public, max-age=31536000, immutable");
+  }
+  // Don't cache HTML
+  else if (req.path === "/" || req.path.match(/\.html$/)) {
+    res.header("Cache-Control", "public, max-age=0, must-revalidate");
+  }
+  next();
+});
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -90,14 +122,14 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || "5000", 10);
+  const host = process.env.HOST || "127.0.0.1";
   httpServer.listen(
     {
       port,
-      host: "0.0.0.0",
-      reusePort: true,
+      host,
     },
     () => {
-      log(`serving on port ${port}`);
+      log(`serving on ${host}:${port}`);
     },
   );
 })();

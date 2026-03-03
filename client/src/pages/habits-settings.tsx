@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Trash2, Plus, GripVertical } from "lucide-react";
+import { Trash2, Plus, GripVertical, CheckSquare } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "@/components/page-header";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useHabits, useCreateHabit, useDeleteHabit } from "@/hooks/use-habits";
+import { useHabits, useCreateHabit, useDeleteHabit } from "@/hooks";
 
 export default function HabitsSettingsPage() {
   const { data: habits = [], isLoading } = useHabits();
@@ -23,22 +23,22 @@ export default function HabitsSettingsPage() {
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-3xl mx-auto w-full pb-24">
+    <div className="p-4 md:p-6 lg:p-8 max-w-3xl mx-auto w-full pb-24">
       <PageHeader 
         title="Habit Configuration" 
         description="Define the daily habits you want to track consistently."
       />
 
       <Card className="premium-card overflow-hidden">
-        <div className="p-6 bg-secondary/20 border-b border-border/50">
-          <form onSubmit={handleAdd} className="flex gap-3">
+        <div className="p-5 md:p-6 bg-secondary/20 border-b border-border/50">
+          <form onSubmit={handleAdd} className="flex flex-col sm:flex-row gap-3">
             <Input 
               placeholder="E.g. Drink 2L water, Read 30 mins..." 
               value={newHabit}
               onChange={e => setNewHabit(e.target.value)}
               className="bg-background shadow-sm"
             />
-            <Button type="submit" disabled={createHabit.isPending || !newHabit.trim()} className="shadow-sm">
+            <Button type="submit" disabled={createHabit.isPending || !newHabit.trim()} className="shadow-sm w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" /> Add Habit
             </Button>
           </form>
@@ -86,5 +86,3 @@ export default function HabitsSettingsPage() {
     </div>
   );
 }
-
-import { CheckSquare } from "lucide-react";

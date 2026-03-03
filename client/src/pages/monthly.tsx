@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useMonthlyReview, useUpsertMonthlyReview } from "@/hooks/use-reviews";
+import { useMonthlyReview, useUpsertMonthlyReview } from "@/hooks";
 
 export default function MonthlyPage() {
   const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
@@ -61,7 +61,7 @@ export default function MonthlyPage() {
   const monthLabel = format(currentDate, "MMMM yyyy");
 
   return (
-    <div className="p-4 md:p-8 max-w-4xl mx-auto w-full pb-24">
+    <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto w-full pb-24">
       <PageHeader 
         title="Monthly Overview" 
         description="Zoom out. Look at the big picture of your progress."
@@ -76,9 +76,9 @@ export default function MonthlyPage() {
           <div className="h-64 bg-muted rounded-xl"></div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
           <Card className="premium-card">
-            <CardContent className="p-6 space-y-8">
+            <CardContent className="p-5 md:p-6 space-y-7 md:space-y-8">
               
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
@@ -146,7 +146,7 @@ export default function MonthlyPage() {
           </Card>
           
           <div className="flex justify-end">
-            <Button size="lg" type="submit" disabled={upsertReview.isPending} className="px-8 shadow-lg shadow-primary/20">
+            <Button size="lg" type="submit" disabled={upsertReview.isPending} className="w-full sm:w-auto px-8 shadow-lg shadow-primary/20">
               {upsertReview.isPending ? "Saving..." : "Lock in Monthly Review"}
             </Button>
           </div>

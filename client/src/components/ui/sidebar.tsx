@@ -266,14 +266,19 @@ function SidebarTrigger({
       data-slot="sidebar-trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-7 w-7", className)}
+      className={cn(
+        "h-8 w-8 rounded-lg border border-border/70 bg-card/80 text-foreground shadow-sm transition-all",
+        "hover:bg-accent hover:text-accent-foreground hover:border-border",
+        "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        className
+      )}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
     >
-      <PanelLeftIcon />
+      <PanelLeftIcon className="h-4 w-4" />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
